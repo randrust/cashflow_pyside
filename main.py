@@ -1,11 +1,34 @@
 import sys
-
+import datetime
 import PySide2
-from PySide2.QtWidgets import QApplication, QMainWindow
+from PySide2.QtWidgets import QApplication, QMainWindow, QDialog
+from ui_add_update import Ui_Dialog
 from ui_mainwindowt import Ui_MainWindow
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import Session
 
+
+class addDialog(QDialog):
+    def __init__(self, *args, **kvargs):
+        super().__init__(*args, **kvargs)
+        self.ui = Ui_Dialog()
+        self.ui.setupUi(self)
+
+        self.ui.OkButton.clicked.connect(self.accept)
+        self.ui.CancelButton.clicked.connect(self.reject)
+        self.ui.dateEdit.setDate(datetime.date.today())
+        self.ui.OkButton.clicked.connect(self.get_data)
+
+
+    def get_data(self):
+        return {
+            "c_date": self.ui.dateEdit.date().toPython(),
+            "c_1000": self.ui.sc1000.value(),
+            "c_500": self.ui.sc500.value(),
+            "c_200": self.ui.sc200.value(),
+            "c_100": self.ui.sc100.value(),
+            "c_50": self.ui.sc50.value()
+        }
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -15,6 +38,13 @@ class MainWindow(QMainWindow):
 
         self.engine = create_engine("sqlite+pysqlite:///cashflow.sqlite", echo=True)
         self.load_cash()
+        self.ui.btnAdd.clicked.connect(self.on_btnAdd_click)
+
+    def on_btnAdd_click(self):
+        dialog = addDialog()
+        r = dialog.exec_()
+        if r == 1:
+            pass
 
     def load_cash(self):
         with Session(self.engine) as s:
