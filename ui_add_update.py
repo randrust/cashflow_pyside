@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'add_updateZQJGSI.ui'
+## Form generated from reading UI file 'add_updateDkdIxd.ui'
 ##
 ## Created by: Qt User Interface Compiler version 5.15.2
 ##
@@ -20,7 +20,7 @@ class Ui_Dialog(object):
         Dialog.resize(281, 364)
         self.layoutWidget = QWidget(Dialog)
         self.layoutWidget.setObjectName(u"layoutWidget")
-        self.layoutWidget.setGeometry(QRect(10, 10, 247, 339))
+        self.layoutWidget.setGeometry(QRect(10, 10, 257, 339))
         self.verticalLayout_5 = QVBoxLayout(self.layoutWidget)
         self.verticalLayout_5.setObjectName(u"verticalLayout_5")
         self.verticalLayout_5.setContentsMargins(0, 0, 0, 0)
@@ -104,6 +104,10 @@ class Ui_Dialog(object):
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
         self.sc1000 = QSpinBox(self.widget)
         self.sc1000.setObjectName(u"sc1000")
+        font1 = QFont()
+        font1.setPointSize(10)
+        self.sc1000.setFont(font1)
+        self.sc1000.setAlignment(Qt.AlignCenter)
         self.sc1000.setButtonSymbols(QAbstractSpinBox.NoButtons)
         self.sc1000.setProperty("showGroupSeparator", True)
         self.sc1000.setMaximum(1000)
@@ -113,6 +117,8 @@ class Ui_Dialog(object):
 
         self.sc500 = QSpinBox(self.widget)
         self.sc500.setObjectName(u"sc500")
+        self.sc500.setFont(font1)
+        self.sc500.setAlignment(Qt.AlignCenter)
         self.sc500.setButtonSymbols(QAbstractSpinBox.NoButtons)
         self.sc500.setProperty("showGroupSeparator", True)
         self.sc500.setMaximum(1000)
@@ -122,6 +128,8 @@ class Ui_Dialog(object):
 
         self.sc200 = QSpinBox(self.widget)
         self.sc200.setObjectName(u"sc200")
+        self.sc200.setFont(font1)
+        self.sc200.setAlignment(Qt.AlignCenter)
         self.sc200.setButtonSymbols(QAbstractSpinBox.NoButtons)
         self.sc200.setProperty("showGroupSeparator", True)
         self.sc200.setMaximum(1000)
@@ -131,6 +139,8 @@ class Ui_Dialog(object):
 
         self.sc100 = QSpinBox(self.widget)
         self.sc100.setObjectName(u"sc100")
+        self.sc100.setFont(font1)
+        self.sc100.setAlignment(Qt.AlignCenter)
         self.sc100.setButtonSymbols(QAbstractSpinBox.NoButtons)
         self.sc100.setProperty("showGroupSeparator", True)
         self.sc100.setMaximum(1000)
@@ -140,6 +150,8 @@ class Ui_Dialog(object):
 
         self.sc50 = QSpinBox(self.widget)
         self.sc50.setObjectName(u"sc50")
+        self.sc50.setFont(font1)
+        self.sc50.setAlignment(Qt.AlignCenter)
         self.sc50.setButtonSymbols(QAbstractSpinBox.NoButtons)
         self.sc50.setProperty("showGroupSeparator", True)
         self.sc50.setMaximum(1000)
