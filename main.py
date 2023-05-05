@@ -3,6 +3,7 @@ import datetime
 import PySide2
 from PySide2.QtWidgets import QApplication, QMainWindow, QDialog, QListWidgetItem, QMessageBox
 from PySide2 import QtCore
+from PySide2 import QtCharts
 from ui_add_update import Ui_Dialog
 from ui_mainwindowt import Ui_MainWindow
 from sqlalchemy import create_engine, text
@@ -20,6 +21,11 @@ class addDialog(QDialog):
         self.ui.CancelButton.clicked.connect(self.reject)
         self.ui.dateEdit.setDate(datetime.date.today())
         self.ui.OkButton.clicked.connect(self.get_data)
+        self.ui.sc1000.valueChanged.connect(self.set_label)
+        self.ui.sc500.valueChanged.connect(self.set_label)
+        self.ui.sc200.valueChanged.connect(self.set_label)
+        self.ui.sc100.valueChanged.connect(self.set_label)
+        self.ui.sc50.valueChanged.connect(self.set_label)
 
     def set_label(self):
         self.ui.lsc1000.setNum(1000*self.ui.sc1000.value())
@@ -71,6 +77,7 @@ class MainWindow(QMainWindow):
         self.ui.btnEdit.clicked.connect(self.on_btnEdit_click)
 
     def on_btnEdit_click(self):
+
         item = self.ui.listCash.currentItem()
         init_data = item.data(QtCore.Qt.ItemDataRole.UserRole)
 
@@ -83,6 +90,7 @@ class MainWindow(QMainWindow):
 
         dialog = UpdateDialog(r)
         dialog.set_label()
+        dialog.setWindowTitle("EDIT")
         p = dialog.exec_()
         if p == 0:
             return
@@ -131,6 +139,7 @@ class MainWindow(QMainWindow):
     def on_btnAdd_click(self):
         dialog = addDialog()
         dialog.set_label()
+        dialog.setWindowTitle("ADD")
         r = dialog.exec_()
         if r == 0:
             return
