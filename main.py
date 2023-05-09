@@ -34,7 +34,16 @@ class ItemsModel(QtCore.QAbstractTableModel):
         if not index.isValid:
             return
         if role == QtCore.Qt.ItemDataRole.DisplayRole:
-            return "a"
+            sumtodate = self.items[index.row()]
+            col = index.column()
+            if col == 0:
+                return f'{sumtodate.c_id}'
+            elif col == 1:
+                return f'{sumtodate.DATE}'
+            elif col == 2:
+                return f'{sumtodate.SUMA}'
+        elif role == QtCore.Qt.ItemDataRole.UserRole:
+            return self.items[index.row()]
         
     def headerData(self, section: int, orientation: QtCore.Qt.Orientation, role: QtCore.Qt.ItemDataRole):
         if role == QtCore.Qt.ItemDataRole.DisplayRole:
@@ -112,6 +121,7 @@ class MainWindow(QMainWindow):
 
         self.engine = create_engine("sqlite+pysqlite:///cashflow.sqlite", echo=True)
         self.load_cash()
+        self.ui.tableView.hideColumn(0)
         self.ui.btnAdd.clicked.connect(self.on_btnAdd_click)
         self.ui.btnDelete.clicked.connect(self.on_btnDelete_click)
         self.ui.btnEdit.clicked.connect(self.on_btnEdit_click)
@@ -119,7 +129,10 @@ class MainWindow(QMainWindow):
     def on_btnEdit_click(self):
 
         item = self.ui.tableView.currentIndex()
+        
         init_data = item.data(QtCore.Qt.ItemDataRole.UserRole)
+        if init_data == None:
+            return
 
         with Session(self.engine) as s:
             query = """
@@ -241,7 +254,7 @@ class MainWindow(QMainWindow):
         series.setLabelsVisible()
         chart = qtch.QChart()
         chart.addSeries(series)
-        chart.createDefaultAxes()
+        # chart.createDefaultAxes()
         axis = qtch.QBarCategoryAxis()
         axis.append(self.rowsDate)
         chart.setAxisY(axis)
