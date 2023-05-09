@@ -3,7 +3,7 @@ import datetime
 import PySide2
 from PySide2.QtWidgets import QApplication, QMainWindow, QDialog, QListWidgetItem, QMessageBox
 from PySide2 import QtCore
-from PySide2 import QtCharts
+from PySide2.QtCharts import QtCharts as qtch
 from ui_add_update import Ui_Dialog
 from ui_mainwindowt import Ui_MainWindow
 from sqlalchemy import create_engine, text
@@ -165,6 +165,7 @@ class MainWindow(QMainWindow):
 
     def load_cash(self):
         self.ui.listCash.clear()
+        self.rows = []
         with Session(self.engine) as s:
             query1 = """
             SELECT c_id, c_date AS DATE, 
@@ -177,8 +178,43 @@ class MainWindow(QMainWindow):
                 item = QListWidgetItem(f"{r.DATE}====={r.SUMA}====={r.c_id}")
                 item.setData(QtCore.Qt.ItemDataRole.UserRole, r)
                 self.ui.listCash.addItem(item)
+                self.rows.append(r)
+                print(r.DATE[-2:])
 
             self.ui.lblSuma.setNum(listsum)
+
+        self.draw_bar_chart()
+        # self.draw_line_chart()
+
+    def  draw_bar_chart(self):
+        series = qtch.QHorizontalBarSeries()
+        bar_set = qtch.QBarSet("Суми по датах")
+        bar_set.append(16000)
+        series.append(bar_set)
+        series.setLabelsVisible()
+        chart = qtch.QChart()
+        chart.addSeries(series)
+        chart.createDefaultAxes()
+        axis = qtch.QBarCategoryAxis()
+        axis.append(['2023-05-08'])
+        chart.setAxisY(axis)
+        series.attachAxis(axis)
+        self.ui.chartView1.setChart(chart)
+
+
+    # def draw_line_chart(self):
+    #     series = qtch.QLineSeries()
+    #     i = 1
+    #     for row in self.rows:
+    #         series.append(i, row.SUMA)
+    #         i += 1
+    #     series.setName("Суми по датах")
+    #     chart = qtch.QChart()
+    #     chart.addSeries(series)
+    #     chart.createDefaultAxes()
+    #     self.ui.chartView1.setChart(chart)
+
+
 
 
 if __name__ == "__main__":
