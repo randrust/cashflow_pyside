@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'mainwindowtkXzXas.ui'
+## Form generated from reading UI file 'mainwindowtpOqkcI.ui'
 ##
 ## Created by: Qt User Interface Compiler version 5.15.2
 ##
@@ -26,11 +26,6 @@ class Ui_MainWindow(object):
         self.gridLayout_2.setObjectName(u"gridLayout_2")
         self.gridLayout = QGridLayout()
         self.gridLayout.setObjectName(u"gridLayout")
-        self.listCash = QListWidget(self.centralwidget)
-        self.listCash.setObjectName(u"listCash")
-
-        self.gridLayout.addWidget(self.listCash, 1, 0, 1, 3)
-
         self.btnDelete = QPushButton(self.centralwidget)
         self.btnDelete.setObjectName(u"btnDelete")
 
@@ -64,10 +59,15 @@ class Ui_MainWindow(object):
 
         self.gridLayout.addWidget(self.btnAdd, 0, 0, 1, 1)
 
+        self.tableView = QTableView(self.centralwidget)
+        self.tableView.setObjectName(u"tableView")
+
+        self.gridLayout.addWidget(self.tableView, 1, 0, 1, 3)
+
         self.chartView1 = QChartView(self.centralwidget)
         self.chartView1.setObjectName(u"chartView1")
 
-        self.gridLayout.addWidget(self.chartView1, 1, 3, 1, 1)
+        self.gridLayout.addWidget(self.chartView1, 0, 3, 3, 1)
 
 
         self.gridLayout_2.addLayout(self.gridLayout, 0, 0, 1, 1)

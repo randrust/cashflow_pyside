@@ -1,6 +1,8 @@
 import sys
 import datetime
+import typing
 import PySide2
+import PySide2.QtCore
 from PySide2.QtWidgets import QApplication, QMainWindow, QDialog, QListWidgetItem, QMessageBox
 from PySide2 import QtCore
 from PySide2.QtCharts import QtCharts as qtch
@@ -10,13 +12,48 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.orm import Session
 
 
+class ItemsModel(QtCore.QAbstractTableModel):
+    def __init__(self, *args, **kvargs):
+        super().__init__(*args, **kvargs)
+
+        self.items = []
+        
+
+    def setItems(self, items):
+        self.beginResetModel()
+        self.items = items
+        self.endResetModel()
+
+    def rowCount(self, *args, **kvargs) -> int:
+        return len(self.items)
+    
+    def columnCount(self, *args, **kvargs) -> int:
+        return 3
+    
+    def data(self, index: QtCore.QModelIndex, role: QtCore.Qt.ItemDataRole):
+        if not index.isValid:
+            return
+        if role == QtCore.Qt.ItemDataRole.DisplayRole:
+            return "a"
+        
+    def headerData(self, section: int, orientation: QtCore.Qt.Orientation, role: QtCore.Qt.ItemDataRole):
+        if role == QtCore.Qt.ItemDataRole.DisplayRole:
+            if orientation == QtCore.Qt.Orientation.Horizontal:
+                return {
+                    0: "id",
+                    1: "DATE",
+                    2: "SUMA"
+                }.get(section)
+        return super().headerData(section, orientation, role)
+
+
+
 class addDialog(QDialog):
     def __init__(self, *args, **kvargs):
         super().__init__(*args, **kvargs)
         self.ui = Ui_Dialog()
         self.ui.setupUi(self)
-
-
+                
         self.ui.OkButton.clicked.connect(self.accept)
         self.ui.CancelButton.clicked.connect(self.reject)
         self.ui.dateEdit.setDate(datetime.date.today())
@@ -70,6 +107,9 @@ class MainWindow(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
+        self.model = ItemsModel()
+        self.ui.tableView.setModel(self.model)
+
         self.engine = create_engine("sqlite+pysqlite:///cashflow.sqlite", echo=True)
         self.load_cash()
         self.ui.btnAdd.clicked.connect(self.on_btnAdd_click)
@@ -78,7 +118,7 @@ class MainWindow(QMainWindow):
 
     def on_btnEdit_click(self):
 
-        item = self.ui.listCash.currentItem()
+        item = self.ui.tableView.currentIndex()
         init_data = item.data(QtCore.Qt.ItemDataRole.UserRole)
 
         with Session(self.engine) as s:
@@ -164,9 +204,10 @@ class MainWindow(QMainWindow):
 
 
     def load_cash(self):
-        self.ui.listCash.clear()
+        # self.ui.listCash.clear()
         self.rowsDate = []
         self.rowsSuma = []
+        self.rows = []
 
         with Session(self.engine) as s:
             query1 = """
@@ -177,15 +218,17 @@ class MainWindow(QMainWindow):
             listsum = s.execute(text(query2)).fetchall()[0][0]
             rows = s.execute(text(query1))
             for r in rows:
-                item = QListWidgetItem(f"{r.DATE}====={r.SUMA}====={r.c_id}")
-                item.setData(QtCore.Qt.ItemDataRole.UserRole, r)
-                self.ui.listCash.addItem(item)
+                # item = QListWidgetItem(f"{r.DATE}====={r.SUMA}====={r.c_id}")
+                # item.setData(QtCore.Qt.ItemDataRole.UserRole, r)
+                # self.ui.listCash.addItem(item)
                 self.rowsDate.append(r.DATE)
                 self.rowsSuma.append(r.SUMA)
+                self.rows.append(r)
                 
 
             self.ui.lblSuma.setNum(listsum)
 
+        self.model.setItems(self.rows)
         self.draw_bar_chart()
         # self.draw_line_chart()
 
