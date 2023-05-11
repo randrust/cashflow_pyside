@@ -50,8 +50,8 @@ class ItemsModel(QtCore.QAbstractTableModel):
             if orientation == QtCore.Qt.Orientation.Horizontal:
                 return {
                     0: "id",
-                    1: "DATE",
-                    2: "SUMA"
+                    1: "ДАТА",
+                    2: "СУМА"
                 }.get(section)
         return super().headerData(section, orientation, role)
 
@@ -120,11 +120,15 @@ class MainWindow(QMainWindow):
         self.ui.tableView.setModel(self.model)
 
         self.engine = create_engine("sqlite+pysqlite:///cashflow.sqlite", echo=True)
+        self.load_periods()
         self.load_cash()
         self.ui.tableView.hideColumn(0)
         self.ui.btnAdd.clicked.connect(self.on_btnAdd_click)
         self.ui.btnDelete.clicked.connect(self.on_btnDelete_click)
         self.ui.btnEdit.clicked.connect(self.on_btnEdit_click)
+        self.ui.cmbPeriods.currentIndexChanged.connect(self.load_cash)
+
+    
 
     def on_btnEdit_click(self):
 
@@ -176,6 +180,8 @@ class MainWindow(QMainWindow):
     def on_btnDelete_click(self):
         item = self.ui.tableView.currentIndex()
         data = item.data(QtCore.Qt.ItemDataRole.UserRole)
+        if data == None:
+            return
         r = QMessageBox.question(self, "Підтвердження", "Видалити запис?")
         if r == QMessageBox.StandardButton.No:
             return
@@ -217,7 +223,13 @@ class MainWindow(QMainWindow):
 
 
     def load_cash(self):
-        # self.ui.listCash.clear()
+        period_data = self.ui.cmbPeriods.currentData()
+        if period_data:
+            date_from = self.ui.cmbPeriods.currentData().p_from
+            date_to = self.ui.cmbPeriods.currentData().p_to
+        else:
+            date_from = self.p_min
+            date_to = self.p_max
         self.rowsDate = []
         self.rowsSuma = []
         self.rows = []
@@ -226,29 +238,53 @@ class MainWindow(QMainWindow):
             query1 = """
             SELECT c_id, c_date AS DATE, 
             (c_1000*1000+c_500*500+c_200*200+c_100*100+c_50*50) AS SUMA 
-            FROM cashboxes ORDER BY DATE DESC"""
-            query2 = """SELECT SUM(c_1000*1000+c_500*500+c_200*200+c_100*100+c_50*50) FROM cashboxes"""
-            listsum = s.execute(text(query2)).fetchall()[0][0]
-            rows = s.execute(text(query1))
+            FROM cashboxes 
+            WHERE DATE BETWEEN :df AND :dt
+            ORDER BY DATE DESC"""
+            query2 = """
+            SELECT SUM(c_1000*1000+c_500*500+c_200*200+c_100*100+c_50*50) 
+            FROM cashboxes
+            WHERE c_date BETWEEN :df AND :dt
+            """
+            listsum = s.execute(text(query2), {"df": date_from, "dt": date_to}).fetchall()[0][0]
+            rows = s.execute(text(query1), {"df": date_from, "dt": date_to})
             for r in rows:
-                # item = QListWidgetItem(f"{r.DATE}====={r.SUMA}====={r.c_id}")
-                # item.setData(QtCore.Qt.ItemDataRole.UserRole, r)
-                # self.ui.listCash.addItem(item)
                 self.rowsDate.append(r.DATE)
                 self.rowsSuma.append(r.SUMA)
                 self.rows.append(r)
                 
-
+            
             self.ui.lblSuma.setNum(listsum)
 
         self.model.setItems(self.rows)
         self.draw_bar_chart()
-        # self.draw_line_chart()
+
+    def load_periods(self):        
+        self.periods ={}
+        with Session(self.engine) as s:
+            query = """
+            SELECT * FROM periods ORDER BY p_to DESC
+            """
+            rows = s.execute(text(query))
+            for r in rows:
+                self.periods[r.p_id] = r
+        
+        self.p_min = min([i.p_from for i in self.periods.values()])
+        self.p_max = max([i.p_to for i in self.periods.values()])
+
+        # print(datetime.datetime.strptime(self.p_min, "%Y-%m-%d").strftime('%a'))
+
+        for r in self.periods.values():
+            item = f"Від {r.p_from} до {r.p_to}"
+            self.ui.cmbPeriods.addItem(item, r)
+
+        self.ui.cmbPeriods.addItem("Всі періоди")
+        
 
     def  draw_bar_chart(self):
         series = qtch.QHorizontalBarSeries()
         bar_set = qtch.QBarSet("Суми по датах")
-        for row in self.rowsSuma:
+        for row in self.rowsSuma[::-1]:
             bar_set.append(row)
         series.append(bar_set)
         series.setLabelsVisible()
@@ -256,7 +292,7 @@ class MainWindow(QMainWindow):
         chart.addSeries(series)
         # chart.createDefaultAxes()
         axis = qtch.QBarCategoryAxis()
-        axis.append(self.rowsDate)
+        axis.append(self.rowsDate[::-1])
         chart.setAxisY(axis)
         series.attachAxis(axis)
         self.ui.chartView1.setChart(chart)
