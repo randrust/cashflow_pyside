@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1010</width>
-    <height>670</height>
+    <height>662</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,15 +17,28 @@
    <layout class="QGridLayout" name="gridLayout_2">
     <item row="0" column="0">
      <layout class="QGridLayout" name="gridLayout">
-      <item row="0" column="2">
+      <item row="6" column="0" colspan="3">
+       <widget class="QTableView" name="tableView"/>
+      </item>
+      <item row="0" column="3" rowspan="8">
+       <widget class="QChartView" name="chartView1"/>
+      </item>
+      <item row="5" column="2">
        <widget class="QPushButton" name="btnDelete">
         <property name="text">
          <string>DELETE</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="lbl">
+      <item row="1" column="2">
+       <widget class="QPushButton" name="btnNewPeriod">
+        <property name="text">
+         <string>NEW</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" colspan="3">
+       <widget class="QLabel" name="label">
         <property name="font">
          <font>
           <pointsize>12</pointsize>
@@ -34,14 +47,14 @@
          </font>
         </property>
         <property name="text">
-         <string>SUMA</string>
+         <string>Переоблік</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
         </property>
        </widget>
       </item>
-      <item row="2" column="1" colspan="2">
+      <item row="7" column="1" colspan="2">
        <widget class="QLabel" name="lblSuma">
         <property name="font">
          <font>
@@ -58,25 +71,63 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
-       <widget class="QPushButton" name="btnEdit">
+      <item row="1" column="0" colspan="2">
+       <widget class="QComboBox" name="cmbPeriods"/>
+      </item>
+      <item row="7" column="0">
+       <widget class="QLabel" name="lbl">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
         <property name="text">
-         <string>EDIT</string>
+         <string>Всього</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
         </property>
        </widget>
       </item>
-      <item row="0" column="0">
+      <item row="5" column="0">
        <widget class="QPushButton" name="btnAdd">
         <property name="text">
          <string>ADD</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="0" colspan="3">
-       <widget class="QTableView" name="tableView"/>
+      <item row="5" column="1">
+       <widget class="QPushButton" name="btnEdit">
+        <property name="text">
+         <string>EDIT</string>
+        </property>
+       </widget>
       </item>
-      <item row="0" column="3" rowspan="3">
-       <widget class="QChartView" name="chartView1"/>
+      <item row="3" column="0" colspan="3">
+       <widget class="QLabel" name="label_2">
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Суми по датах</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" colspan="3">
+       <widget class="QPushButton" name="btnAllSum">
+        <property name="text">
+         <string>ALL</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </item>

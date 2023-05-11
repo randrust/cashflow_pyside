@@ -174,7 +174,7 @@ class MainWindow(QMainWindow):
 
 
     def on_btnDelete_click(self):
-        item = self.ui.listCash.currentItem()
+        item = self.ui.tableView.currentIndex()
         data = item.data(QtCore.Qt.ItemDataRole.UserRole)
         r = QMessageBox.question(self, "Підтвердження", "Видалити запис?")
         if r == QMessageBox.StandardButton.No:
