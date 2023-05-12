@@ -4,7 +4,7 @@ import typing
 import PySide2
 import PySide2.QtCore
 from PySide2.QtWidgets import QApplication, QMainWindow, QDialog, QListWidgetItem, QMessageBox
-from PySide2 import QtCore
+from PySide2 import QtCore, QtGui
 from PySide2.QtCharts import QtCharts as qtch
 from ui_add_update import Ui_Dialog
 from ui_mainwindowt import Ui_MainWindow
@@ -115,6 +115,7 @@ class MainWindow(QMainWindow):
         super(MainWindow, self).__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+        self.setWindowIcon(QtGui.QIcon('currency.png'))
 
         self.model = ItemsModel()
         self.ui.tableView.setModel(self.model)
