@@ -18,7 +18,7 @@ from sqlalchemy.orm import Session
 
 
 class newPeriodDialog(QDialog):
-    def __init__(self, *args, **kvargs):
+    def __init__(self, p_max, *args, **kvargs):
         super().__init__(*args, **kvargs)
         self.ui = Ui_DialogP()
         self.ui.setupUi(self)
@@ -26,7 +26,15 @@ class newPeriodDialog(QDialog):
         self.ui.btnOk.clicked.connect(self.accept)
         self.ui.btnCancel.clicked.connect(self.reject)
         # self.ui.dateEdit.setDate(datetime.date.today())
-        # self.ui.dateEditFrom.setDate(datetime.datetime.strptime(self.p_max, "%Y-%m-%d"))
+        self.ui.dateEditFrom.setDate(datetime.datetime.strptime(p_max, "%Y-%m-%d")+datetime.timedelta(days=1))
+        self.ui.dateEditTo.setDate(datetime.datetime.strptime(p_max, "%Y-%m-%d")+datetime.timedelta(days=21))
+
+    def get_dates_period(self):
+        return {
+            "p_from": self.ui.dateEditFrom.date().toPython(),
+            "p_to": self.ui.dateEditTo.date().toPython()
+        }
+    
 
 
 
@@ -36,11 +44,17 @@ class ItemsModel(QtCore.QAbstractTableModel):
         super().__init__(*args, **kvargs)
 
         self.items = []
+        self.periods = {}
         
 
     def setItems(self, items):
         self.beginResetModel()
         self.items = items
+        self.endResetModel()
+
+    def setPeriod(self, periods):
+        self.beginResetModel()
+        self.periods = periods
         self.endResetModel()
 
     def rowCount(self, *args, **kvargs) -> int:
@@ -150,10 +164,25 @@ class MainWindow(QMainWindow):
         self.ui.btnNewPeriod.clicked.connect(self.on_btnNewPeriod)
 
     def on_btnNewPeriod(self):
-        dialog = newPeriodDialog()
+        dialog = newPeriodDialog(self.p_max)
         p = dialog.exec_()
         if p == 0:
             return
+        
+        data = dialog.get_dates_period()
+        with Session(self.engine) as s:
+            query = """
+            INSERT INTO periods(p_from, p_to) 
+            VALUES (:p_from, :p_to) 
+            """
+            s.execute(text(query), {
+                "p_from": data['p_from'],
+                "p_to": data['p_to']
+            })
+            s.commit()
+        self.load_periods()
+        self.load_cash()
+        
 
     def on_btnEdit_click(self):
 
@@ -278,13 +307,14 @@ class MainWindow(QMainWindow):
                 self.rowsSuma.append(r.SUMA)
                 self.rows.append(r)
                 
-            
-            self.ui.lblSuma.setNum(listsum)
+            if listsum:
+                self.ui.lblSuma.setNum(listsum)
 
         self.model.setItems(self.rows)
         self.draw_bar_chart()
 
-    def load_periods(self):        
+    def load_periods(self):
+        self.ui.cmbPeriods.clear()            
         self.periods ={}
         with Session(self.engine) as s:
             query = """
@@ -304,6 +334,8 @@ class MainWindow(QMainWindow):
             self.ui.cmbPeriods.addItem(item, r)
 
         self.ui.cmbPeriods.addItem("Всі періоди")
+
+        self.model.setPeriod(self.periods)
         
 
     def  draw_bar_chart(self):
