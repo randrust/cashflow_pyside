@@ -6,10 +6,29 @@ import PySide2.QtCore
 from PySide2.QtWidgets import QApplication, QMainWindow, QDialog, QListWidgetItem, QMessageBox
 from PySide2 import QtCore, QtGui
 from PySide2.QtCharts import QtCharts as qtch
+from ui_new_period import Ui_DialogP
 from ui_add_update import Ui_Dialog
 from ui_mainwindowt import Ui_MainWindow
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import Session
+
+
+
+
+
+
+class newPeriodDialog(QDialog):
+    def __init__(self, *args, **kvargs):
+        super().__init__(*args, **kvargs)
+        self.ui = Ui_DialogP()
+        self.ui.setupUi(self)
+                
+        self.ui.btnOk.clicked.connect(self.accept)
+        self.ui.btnCancel.clicked.connect(self.reject)
+        # self.ui.dateEdit.setDate(datetime.date.today())
+        # self.ui.dateEditFrom.setDate(datetime.datetime.strptime(self.p_max, "%Y-%m-%d"))
+
+
 
 
 class ItemsModel(QtCore.QAbstractTableModel):
@@ -128,8 +147,13 @@ class MainWindow(QMainWindow):
         self.ui.btnDelete.clicked.connect(self.on_btnDelete_click)
         self.ui.btnEdit.clicked.connect(self.on_btnEdit_click)
         self.ui.cmbPeriods.currentIndexChanged.connect(self.load_cash)
+        self.ui.btnNewPeriod.clicked.connect(self.on_btnNewPeriod)
 
-    
+    def on_btnNewPeriod(self):
+        dialog = newPeriodDialog()
+        p = dialog.exec_()
+        if p == 0:
+            return
 
     def on_btnEdit_click(self):
 
