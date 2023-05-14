@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'mainwindowtirSBSd.ui'
+## Form generated from reading UI file 'mainwindowtzSiGZy.ui'
 ##
 ## Created by: Qt User Interface Compiler version 5.15.2
 ##
@@ -106,7 +106,7 @@ class Ui_MainWindow(object):
         sizePolicy.setHeightForWidth(self.btnEditPeriod.sizePolicy().hasHeightForWidth())
         self.btnEditPeriod.setSizePolicy(sizePolicy)
 
-        self.gridLayout.addWidget(self.btnEditPeriod, 1, 0, 1, 1)
+        self.gridLayout.addWidget(self.btnEditPeriod, 1, 0, 1, 2)
 
 
         self.gridLayout_2.addLayout(self.gridLayout, 0, 0, 1, 1)
@@ -114,7 +114,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 1010, 26))
+        self.menubar.setGeometry(QRect(0, 0, 1010, 21))
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
@@ -135,6 +135,6 @@ class Ui_MainWindow(object):
         self.lbl.setText(QCoreApplication.translate("MainWindow", u"\u0412\u0441\u044c\u043e\u0433\u043e \u0437\u0430 \u043f\u0435\u0440\u0456\u043e\u0434", None))
         self.btnAdd.setText(QCoreApplication.translate("MainWindow", u"\u0414\u041e\u0414\u0410\u0422\u0418", None))
         self.lblSuma.setText(QCoreApplication.translate("MainWindow", u"0", None))
-        self.btnEditPeriod.setText(QCoreApplication.translate("MainWindow", u"\u0417\u041c\u0406\u041d\u0418\u0422\u0418", None))
+        self.btnEditPeriod.setText(QCoreApplication.translate("MainWindow", u"\u0412\u0418\u041f\u0420\u0410\u0412\u0418\u0422\u0418", None))
     # retranslateUi
 

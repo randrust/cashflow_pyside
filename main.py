@@ -36,7 +36,24 @@ class newPeriodDialog(QDialog):
         }
     
 
+class correctPeriodDialog(QDialog):
+    def __init__(self,  init_data, *args, **kvargs):
+        super().__init__(*args, **kvargs)
+        self.ui = Ui_DialogP()
+        self.ui.setupUi(self)
+        self.ui.label.setText("Виправити поточний")
+                
+        self.ui.btnOk.clicked.connect(self.accept)
+        self.ui.btnCancel.clicked.connect(self.reject)
 
+        self.ui.dateEditFrom.setDate(datetime.datetime.strptime(init_data[1], "%Y-%m-%d"))
+        self.ui.dateEditTo.setDate(datetime.datetime.strptime(init_data[2], "%Y-%m-%d"))
+
+    def get_dates_period(self):
+        return {
+            "p_from": self.ui.dateEditFrom.date().toPython(),
+            "p_to": self.ui.dateEditTo.date().toPython()
+        }
 
 
 class ItemsModel(QtCore.QAbstractTableModel):
@@ -162,6 +179,45 @@ class MainWindow(QMainWindow):
         self.ui.btnEdit.clicked.connect(self.on_btnEdit_click)
         self.ui.cmbPeriods.currentIndexChanged.connect(self.load_cash)
         self.ui.btnNewPeriod.clicked.connect(self.on_btnNewPeriod)
+        self.ui.btnEditPeriod.clicked.connect(self.on_btnEditPeriod_click)
+
+    def on_btnEditPeriod_click(self):
+        # item = self.ui.cmbPeriods.currentIndex()
+        init_data = self.ui.cmbPeriods.currentData()
+        # init_data = self.periods.p_id[0]
+        if init_data == None:
+            return
+
+        with Session(self.engine) as s:
+            query = """
+            SELECT * FROM periods WHERE p_id = :p_id
+            """
+            r = s.execute(text(query), {'p_id': init_data.p_id}).fetchone()
+
+
+        dialog = correctPeriodDialog(r)
+        dialog.setWindowTitle("EDIT")
+        p = dialog.exec_()
+        if p == 0:
+            return
+
+        data = dialog.get_dates_period()
+        with Session(self.engine) as s:
+            query = """
+            UPDATE periods SET 
+            p_from = :p_from, 
+            p_to = :p_to
+            WHERE p_id = :p_id
+            """
+            s.execute(text(query), {
+                "p_from": data['p_from'],
+                "p_to": data['p_to'],
+                "p_id": r[0]
+            })
+            s.commit()
+        self.load_periods()
+        self.load_cash()
+
 
     def on_btnNewPeriod(self):
         dialog = newPeriodDialog(self.p_max)
