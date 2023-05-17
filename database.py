@@ -2,6 +2,9 @@ import sqlite3
 
 class DB:
     def __init__(self):
+        self.creat_database_tables()
+
+    def creat_database_tables(self):
         self.conn = sqlite3.connect('cashflow.sqlite')
         self.c = self.conn.cursor()
         self.c.execute(
@@ -25,4 +28,3 @@ class DB:
             ''')
         self.conn.commit()
 
-DB()
