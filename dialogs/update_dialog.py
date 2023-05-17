@@ -1,5 +1,5 @@
 import datetime
-from dialogs.adddialog import addDialog
+from dialogs.add_dialog import addDialog
 
 
 class UpdateDialog(addDialog):
