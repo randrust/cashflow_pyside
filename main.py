@@ -5,6 +5,7 @@ from PySide2 import QtCore, QtGui
 from PySide2.QtCharts import QtCharts as qtch
 from data.add_day_cash_sum import add_day_cash_sum
 from data.add_new_period import add_new_period
+from data.create_database import DB
 from data.create_session import create_session
 from data.delete_day_cash_sum import delete_day_cash_sum
 from data.edit_day_cash_sum import edit_day_cash_sum
@@ -187,6 +188,7 @@ class MainWindow(QMainWindow):
 
 
 if __name__ == "__main__":
+    db = DB()
     app = QApplication(sys.argv)
 
     window = MainWindow()
